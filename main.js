@@ -2,14 +2,18 @@ const electron = require("electron");
 const url = require("url");
 const path = require("path");
 const SerialPort = require("serialport");
+const Readline = require("@serialport/parser-readline");
 
 const { app, BrowserWindow, Menu, ipcMain } = electron;
+const parser = new Readline();
 
 let mainWindow;
 let port;
 
 app.on("ready", () => {
   mainWindow = new BrowserWindow({
+    width: 1024,
+    height: 650,
     webPreferences: {
       nodeIntegration: true
     }
@@ -29,15 +33,11 @@ app.on("ready", () => {
   const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
   Menu.setApplicationMenu(mainMenu);
 });
-ipcMain.on("item:add", (e, item) => {
-  console.log(item);
-  mainWindow.webContents.send("item:add", item);
-  addWindow.close();
-});
 
 ipcMain.on("setPort", (e, item) => {
   console.log(item);
   port = new SerialPort(item, { baudRate: 9600 });
+  port.pipe(parser);
 });
 
 ipcMain.on("turnL0On", e => {
@@ -54,6 +54,18 @@ ipcMain.on("turnL1On", e => {
 
 ipcMain.on("turnL1Off", e => {
   port.write("W,L1;0\n");
+});
+
+ipcMain.on("readS0", e => {
+  port.write("R,S0\n");
+});
+
+ipcMain.on("readS1", e => {
+  port.write("R,S1\n");
+});
+
+parser.on("data", line => {
+  mainWindow.webContents.send("buttonStatus", line);
 });
 
 ipcMain.on("setPwmL0", (e, value) => {

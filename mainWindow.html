@@ -87,7 +87,7 @@
         </div>
         <div class="col s4">
           <input
-            value="Ingresa un valor entre 0 y 255"
+            placeholder="Ingresa un valor entre 0 y 255"
             id="pwm-value"
             class="validate"
             type="text"
@@ -137,11 +137,9 @@
       });
       readS0.addEventListener("click", () => {
         ipcRenderer.send("readS0");
-        showHiddenField();
       });
       readS1.addEventListener("click", () => {
         ipcRenderer.send("readS1");
-        showHiddenField();
       });
       setPwmL0.addEventListener("click", () => {
         const pwmValue = document.getElementById("pwm-value").value;
@@ -155,10 +153,16 @@
         ipcRenderer.send("turnAllOff");
       });
 
-      const showHiddenField = () => {
+      ipcRenderer.on("buttonStatus", (event, message) => {
+        console.log(message);
+        showHiddenField(message);
+      });
+
+      const showHiddenField = status => {
         const field = document.getElementById("disabled");
         field.setAttribute("type", "text");
-        field.value = "El botón está encendido";
+        if (status == 1) field.value = "Botón presionado";
+        else if (status == 0) field.value = "Botón sin presionar";
       };
     </script>
   </body>
