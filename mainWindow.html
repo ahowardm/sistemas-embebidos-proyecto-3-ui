@@ -19,6 +19,11 @@
     </nav>
     <div class="container">
       <div class="row">
+        <h5>Puerto</h5>
+        <p>
+          Detección de puerto automática. 
+          <b>Actualizar si arduino no es detectado.</b>
+        </p>
         <form>
           <div class="input-field col s4">
             <input
@@ -34,29 +39,39 @@
               type="submit"
               name="action"
             >
-              Enviar
-              <i class="material-icons right">send</i>
+              Actualizar
+              <i class="material-icons right">update</i>
             </button>
           </div>
         </form>
       </div>
 
       <div class="row">
-        <h5>Led 0</h5>
         <div class="col s4">
-          <a class="waves-effect waves-light btn" id="turnL0On">Prende</a>
+          <div class="row">
+              <h5>Led 0</h5>
+              <div class="switch">
+                  <label>
+                    Off
+                    <input type="checkbox" id="Led0Switch">
+                    <span class="lever"></span>
+                    On
+                  </label>
+                </div>
+          </div>
         </div>
         <div class="col s4">
-          <a class="waves-effect waves-light btn" id="turnL0Off">Apaga</a>
-        </div>
-      </div>
-      <div class="row">
-        <h5>Led 1</h5>
-        <div class="col s4">
-          <a class="waves-effect waves-light btn" id="turnL1On">Prende</a>
-        </div>
-        <div class="col s4">
-          <a class="waves-effect waves-light btn" id="turnL1Off">Apaga</a>
+          <div class="row">
+            <h5>Led 1</h5>
+            <div class="switch">
+              <label>
+                Off
+                <input type="checkbox" id="Led1Switch">
+                <span class="lever"></span>
+                On
+              </label>
+            </div>
+          </div>
         </div>
       </div>
       <div class="row">
@@ -94,75 +109,134 @@
           />
         </div>
       </div>
+      <div class="row">
+        <h5>PULSE</h5>
+        <div class="col s4">
+          <a class="waves-effect waves-light btn" id="setPulseL0">Pulso L0</a>
+        </div>
+        <div class="col s4">
+          <a class="waves-effect waves-light btn" id="setPulseL1">Pulso L1</a>
+        </div>
+        <div class="col s4">
+          <input
+            placeholder="Ingresa un valor entre 1 y 100"
+            id="pulse-value"
+            class="validate"
+            type="text"
+          />
+        </div>
+      </div>
 
       <div class="row">
-        <a class="waves-effect waves-light btn red" id="turnAllOff"
-          >Apagar Todo</a
-        >
+          <div class="col s4">
+              <a class="waves-effect waves-light btn green" id="saveEEPROM"
+              >Grabar a EEPROM</a> 
+          </div>
+        <div class="col s4">
+            <a class="waves-effect waves-light btn red" id="turnAllOff"
+            >Apagar Todo</a> 
+        </div>
       </div>
     </div>
 
     <script>
       const electron = require("electron");
-      const { ipcRenderer } = electron;
+      const constants = require('./constants');
+      const { ipcRenderer} = electron;
+      const port = document.querySelector("#port");
 
+      const {dialog} = require('electron').remote;
+      
       const form = document.querySelector("form");
       form.addEventListener("submit", e => {
         e.preventDefault();
-        const port = document.querySelector("#port").value;
-        ipcRenderer.send("setPort", port);
+        ipcRenderer.send(constants.SET_PORT_EVENT, port.value);
       });
+      const switchL0 = document.getElementById(constants.L0_SWITCH_ID);
+      const switchL1 = document.getElementById(constants.L1_SWITCH_ID);
+      const readS0 = document.getElementById(constants.S0_READ_EVENT);
+      const readS1 = document.getElementById(constants.S1_READ_EVENT);
+      const setPwmL0 = document.getElementById(constants.L0_PWM_EVENT);
+      const setPwmL1 = document.getElementById(constants.L1_PWM_EVENT);
+      const setPulseL0 = document.getElementById(constants.L0_PULSE_EVENT);
+      const setPulseL1 = document.getElementById(constants.L1_PULSE_EVENT);
+      const saveEEPROM = document.getElementById(constants.SAVE_EVENT);
+      const turnAllOff = document.getElementById(constants.ALL_OFF_EVENT);
 
-      const turnL0On = document.getElementById("turnL0On");
-      const turnL0Off = document.getElementById("turnL0Off");
-      const turnL1On = document.getElementById("turnL1On");
-      const turnL1Off = document.getElementById("turnL1Off");
-      const readS0 = document.getElementById("readS0");
-      const readS1 = document.getElementById("readS1");
-      const setPwmL0 = document.getElementById("setPwmL0");
-      const setPwmL1 = document.getElementById("setPwmL1");
-      const turnAllOff = document.getElementById("turnAllOff");
-
-      turnL0On.addEventListener("click", () => {
-        ipcRenderer.send("turnL0On");
+      switchL0.addEventListener("change", () =>{
+        ipcRenderer.send(constants.L0_SWITCH_ID, switchL0.checked);
       });
-      turnL0Off.addEventListener("click", () => {
-        ipcRenderer.send("turnL0Off");
-      });
-      turnL1On.addEventListener("click", () => {
-        ipcRenderer.send("turnL1On");
-      });
-      turnL1Off.addEventListener("click", () => {
-        ipcRenderer.send("turnL1Off");
+      switchL1.addEventListener("change", () =>{
+        ipcRenderer.send(constants.L1_SWITCH_ID, switchL1.checked);
       });
       readS0.addEventListener("click", () => {
-        ipcRenderer.send("readS0");
+        ipcRenderer.send(constants.S0_READ_EVENT);
       });
       readS1.addEventListener("click", () => {
-        ipcRenderer.send("readS1");
+        ipcRenderer.send(constants.S1_READ_EVENT);
       });
       setPwmL0.addEventListener("click", () => {
-        const pwmValue = document.getElementById("pwm-value").value;
-        ipcRenderer.send("setPwmL0", pwmValue);
+        switchL0.checked = false;
+        switchL1.checked = false;
+        const pwmValue = document.getElementById(constants.PWM_VALUE).value;
+        ipcRenderer.send(constants.L0_PWM_EVENT, pwmValue);
       });
       setPwmL1.addEventListener("click", () => {
-        const pwmValue = document.getElementById("pwm-value").value;
-        ipcRenderer.send("setPwmL1", pwmValue);
+        switchL0.checked = false;
+        switchL1.checked = false;
+        const pwmValue = document.getElementById(constants.PWM_VALUE).value;
+        ipcRenderer.send(constants.L1_PWM_EVENT, pwmValue);
+      });
+      setPulseL0.addEventListener("click", () => {
+        switchL0.checked = false;
+        switchL1.checked = false;
+        const pulseValue = document.getElementById(constants.PULSE_VALUE).value;
+        ipcRenderer.send(constants.L0_PULSE_EVENT, pulseValue);
+      });
+      setPulseL1.addEventListener("click", () => {
+        switchL0.checked = false;
+        switchL1.checked = false;
+        const pulseValue = document.getElementById(constants.PULSE_VALUE).value;
+        ipcRenderer.send(constants.L1_PULSE_EVENT, pulseValue);
+      });
+      saveEEPROM.addEventListener("click", () => {
+        ipcRenderer.send(constants.SAVE_EVENT);
       });
       turnAllOff.addEventListener("click", () => {
-        ipcRenderer.send("turnAllOff");
+        switchL0.checked = false;
+        switchL1.checked = false;
+        ipcRenderer.send(constants.ALL_OFF_EVENT);
+      });
+      ipcRenderer.on(constants.SERIAL_MESSAGE_EVENT, (event, message) => {
+        if (message.substr(constants.STATUS_BUTTON_START,constants.BUTTON_STRING.length) === constants.BUTTON_STRING){
+          showHiddenField(message);
+        }
+        if (message.substr(0,5) === 'Error'){
+          console.log(message);
+          const options = {
+            type: 'error',
+            buttons: ['Ok'],
+            defaultId: 2,
+            title: 'Error',
+            message: message,
+          };
+          response = dialog.showMessageBox(null, options);
+          ipcRenderer.send(constants.ALL_OFF_EVENT);
+        }
       });
 
-      ipcRenderer.on("buttonStatus", (event, message) => {
-        console.log(message);
-        showHiddenField(message);
+      ipcRenderer.on(constants.PORT_ARDUINO_LABEL, (e, arduinoPort) => {
+        port.value = arduinoPort;
       });
 
       const showHiddenField = status => {
         const field = document.getElementById("disabled");
         field.setAttribute("type", "text");
-        if (status == 1) field.value = "Botón presionado";
-        else if (status == 0) field.value = "Botón sin presionar";
+        field.value = status;
+        /*
+        if (status[status.length -2] == '1') field.value = "Botón presionado";
+        else if (status[status.length -2] == '0') field.value = "Botón sin presionar";
+        */
       };
     </script>
   </body>
