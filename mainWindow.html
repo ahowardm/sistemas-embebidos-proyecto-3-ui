@@ -177,24 +177,20 @@
       });
       setPwmL0.addEventListener("click", () => {
         switchL0.checked = false;
-        switchL1.checked = false;
         const pwmValue = document.getElementById(constants.PWM_VALUE).value;
         ipcRenderer.send(constants.L0_PWM_EVENT, pwmValue);
       });
       setPwmL1.addEventListener("click", () => {
-        switchL0.checked = false;
         switchL1.checked = false;
         const pwmValue = document.getElementById(constants.PWM_VALUE).value;
         ipcRenderer.send(constants.L1_PWM_EVENT, pwmValue);
       });
       setPulseL0.addEventListener("click", () => {
         switchL0.checked = false;
-        switchL1.checked = false;
         const pulseValue = document.getElementById(constants.PULSE_VALUE).value;
         ipcRenderer.send(constants.L0_PULSE_EVENT, pulseValue);
       });
       setPulseL1.addEventListener("click", () => {
-        switchL0.checked = false;
         switchL1.checked = false;
         const pulseValue = document.getElementById(constants.PULSE_VALUE).value;
         ipcRenderer.send(constants.L1_PULSE_EVENT, pulseValue);
