@@ -20,4 +20,4 @@ Desde la carpeta del proyecto ejecutar el comando `npm start`. Con esto va a apa
 * **Carlos Díaz** - [GitHub](https://github.com/cdiazarze)
 * **Tarik Sáez** - [GitHub](https://github.com/BladerzRiadi)
 * **Juan José Ramírez** - [GitHub](https://github.com/JuanjoRamirez262)
-* **Carlos Díaz** - [GitHub](https://github.com/erriveros)
+* **Enrique Riveros** - [GitHub](https://github.com/erriveros)
