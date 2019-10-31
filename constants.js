@@ -18,5 +18,14 @@ module.exports = Object.freeze({
     STATUS_BUTTON_END: 15,
     BUTTON_STRING: 'Button', 
     SAVE_EVENT: 'saveEEPROM',
-    SERIAL_MESSAGE_EVENT: 'serialMessage'
+    SERIAL_MESSAGE_EVENT: 'serialMessage',
+    UP_EVENT: 'up',
+    DOWN_EVENT: 'down',
+    LEFT_EVENT: 'left',
+    RIGHT_EVENT: 'right',
+    FORWARD_EVENT: 'forward',
+    BACKWARD_EVENT: 'backward',
+    STOP_MOVEMENT_EVENT: 'stop2',
+    STOP_CRANE_EVENT: 'stop1'
+
 });

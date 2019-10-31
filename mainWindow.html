@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="es">
   <head>
+    <link href="StyleSheet.css" rel="stylesheet" type="text/css"/>
+
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
@@ -46,98 +48,47 @@
         </form>
       </div>
 
-      <div class="row">
-        <div class="col s4">
-          <div class="row">
-              <h5>Led 0</h5>
-              <div class="switch">
-                  <label>
-                    Off
-                    <input type="checkbox" id="Led0Switch">
-                    <span class="lever"></span>
-                    On
-                  </label>
-                </div>
-          </div>
+      <h5>Crane</h5>
+      <div class="grid">
+          <form action="/keyboard/" class="up">
+            <input type="hidden" name="q" value="126" />
+            <a style="width:100px" class="waves-effect waves-light btn" id="up">Up</a>
+          </form>
+          <form action="/keyboard/" class="left">
+            <input type="hidden" name="q" value="123" />
+            <a style="width:100px" class="waves-effect waves-light btn" id="left">Left</a>
+          </form>
+          <form action="/keyboard/" class="ok">
+            <input type="hidden" name="q" value="36" />
+            <a style="width:100px" class="waves-effect waves-light btn" id="stop1">Stop</a>
+          </form>
+          <form action="/keyboard/" class="right">
+            <input type="hidden" name="q" value="124" />
+            <a style="width:100px" class="waves-effect waves-light btn" id="right">Right</a>
+          </form>
+          <form action="/keyboard/" class="down">
+            <input type="hidden" name="q" value="125" />
+            <a style="width:100px" class="waves-effect waves-light btn" id="down">Down</a>
+          </form>
         </div>
-        <div class="col s4">
-          <div class="row">
-            <h5>Led 1</h5>
-            <div class="switch">
-              <label>
-                Off
-                <input type="checkbox" id="Led1Switch">
-                <span class="lever"></span>
-                On
-              </label>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <h5>Botones</h5>
-        <div class="col s4">
-          <a class="waves-effect waves-light btn" id="readS0">Leer S0</a>
-        </div>
-        <div class="col s4">
-          <a class="waves-effect waves-light btn" id="readS1">Leer S1</a>
-        </div>
-        <div class="col s4">
-          <input
-            value="I am not editable"
-            id="disabled"
-            class="validate"
-            type="hidden"
-            disabled
-          />
-        </div>
-      </div>
-      <div class="row">
-        <h5>PWM</h5>
-        <div class="col s4">
-          <a class="waves-effect waves-light btn" id="setPwmL0">Fijar L0</a>
-        </div>
-        <div class="col s4">
-          <a class="waves-effect waves-light btn" id="setPwmL1">Fijar L1</a>
-        </div>
-        <div class="col s4">
-          <input
-            placeholder="Ingresa un valor entre 0 y 255"
-            id="pwm-value"
-            class="validate"
-            type="text"
-          />
-        </div>
-      </div>
-      <div class="row">
-        <h5>PULSE</h5>
-        <div class="col s4">
-          <a class="waves-effect waves-light btn" id="setPulseL0">Pulso L0</a>
-        </div>
-        <div class="col s4">
-          <a class="waves-effect waves-light btn" id="setPulseL1">Pulso L1</a>
-        </div>
-        <div class="col s4">
-          <input
-            placeholder="Ingresa un valor entre 1 y 100"
-            id="pulse-value"
-            class="validate"
-            type="text"
-          />
-        </div>
-      </div>
 
-      <div class="row">
-          <div class="col s4">
-              <a class="waves-effect waves-light btn green" id="saveEEPROM"
-              >Grabar a EEPROM</a> 
-          </div>
-        <div class="col s4">
-            <a class="waves-effect waves-light btn red" id="turnAllOff"
-            >Apagar Todo</a> 
-        </div>
+      <h5 style="margin-top: 50px">Movement</h5>
+      <div style="margin-left: 100px" class="grid">
+          <form action="/keyboard/" class="up">
+            <input type="hidden" name="q" value="110" />
+            <a style="width:100px" class="waves-effect waves-light btn" id="forward">Forward</a>
+          </form>
+          <form action="/keyboard/" class="up">
+            <input type="hidden" name="q" value="30" />
+            <a style="width:100px" class="waves-effect waves-light btn" id="stop2">Stop</a>
+          </form>
+          <form action="/keyboard/" class="down">
+            <input type="hidden" name="q" value="111" />
+            <a style="width:100px" class="waves-effect waves-light btn" id="backward">Backward</a>
+          </form>
       </div>
     </div>
+
 
     <script>
       const electron = require("electron");
@@ -152,57 +103,41 @@
         e.preventDefault();
         ipcRenderer.send(constants.SET_PORT_EVENT, port.value);
       });
-      const switchL0 = document.getElementById(constants.L0_SWITCH_ID);
-      const switchL1 = document.getElementById(constants.L1_SWITCH_ID);
-      const readS0 = document.getElementById(constants.S0_READ_EVENT);
-      const readS1 = document.getElementById(constants.S1_READ_EVENT);
-      const setPwmL0 = document.getElementById(constants.L0_PWM_EVENT);
-      const setPwmL1 = document.getElementById(constants.L1_PWM_EVENT);
-      const setPulseL0 = document.getElementById(constants.L0_PULSE_EVENT);
-      const setPulseL1 = document.getElementById(constants.L1_PULSE_EVENT);
-      const saveEEPROM = document.getElementById(constants.SAVE_EVENT);
-      const turnAllOff = document.getElementById(constants.ALL_OFF_EVENT);
 
-      switchL0.addEventListener("change", () =>{
-        ipcRenderer.send(constants.L0_SWITCH_ID, switchL0.checked);
+      const up = document.getElementById(constants.UP_EVENT);
+      const down = document.getElementById(constants.DOWN_EVENT);
+      const left = document.getElementById(constants.UP_EVENT);
+      const right = document.getElementById(constants.DOWN_EVENT);
+      const stopCrane = document.getElementById(constants.STOP_CRANE_EVENT);
+      const forward = document.getElementById(constants.FORWARD_EVENT);
+      const backward = document.getElementById(constants.BACKWARD_EVENT);
+      const stopMovement = document.getElementById(constants.STOP_MOVEMENT_EVENT);
+     
+      up.addEventListener("click", () => {
+        ipcRenderer.send(constants.UP_EVENT);
       });
-      switchL1.addEventListener("change", () =>{
-        ipcRenderer.send(constants.L1_SWITCH_ID, switchL1.checked);
+      down.addEventListener("click", () => {
+        ipcRenderer.send(constants.DOWN_EVENT);
       });
-      readS0.addEventListener("click", () => {
-        ipcRenderer.send(constants.S0_READ_EVENT);
+      right.addEventListener("click", () => {
+        ipcRenderer.send(constants.RIGHT_EVENT);
       });
-      readS1.addEventListener("click", () => {
-        ipcRenderer.send(constants.S1_READ_EVENT);
+      left.addEventListener("click", () => {
+        ipcRenderer.send(constants.LEFT_EVENT);
       });
-      setPwmL0.addEventListener("click", () => {
-        switchL0.checked = false;
-        const pwmValue = document.getElementById(constants.PWM_VALUE).value;
-        ipcRenderer.send(constants.L0_PWM_EVENT, pwmValue);
+      stopCrane.addEventListener("click", () => {
+        ipcRenderer.send(constants.STOP_CRANE_EVENT);
       });
-      setPwmL1.addEventListener("click", () => {
-        switchL1.checked = false;
-        const pwmValue = document.getElementById(constants.PWM_VALUE).value;
-        ipcRenderer.send(constants.L1_PWM_EVENT, pwmValue);
+      forward.addEventListener("click", () => {
+        ipcRenderer.send(constants.FORWARD_EVENT);
       });
-      setPulseL0.addEventListener("click", () => {
-        switchL0.checked = false;
-        const pulseValue = document.getElementById(constants.PULSE_VALUE).value;
-        ipcRenderer.send(constants.L0_PULSE_EVENT, pulseValue);
+      backward.addEventListener("click", () => {
+        ipcRenderer.send(constants.BACKWARD_EVENT);
       });
-      setPulseL1.addEventListener("click", () => {
-        switchL1.checked = false;
-        const pulseValue = document.getElementById(constants.PULSE_VALUE).value;
-        ipcRenderer.send(constants.L1_PULSE_EVENT, pulseValue);
+      stopMovement.addEventListener("click", () => {
+        ipcRenderer.send(constants.STOP_MOVEMENT_EVENT);
       });
-      saveEEPROM.addEventListener("click", () => {
-        ipcRenderer.send(constants.SAVE_EVENT);
-      });
-      turnAllOff.addEventListener("click", () => {
-        switchL0.checked = false;
-        switchL1.checked = false;
-        ipcRenderer.send(constants.ALL_OFF_EVENT);
-      });
+      
       ipcRenderer.on(constants.SERIAL_MESSAGE_EVENT, (event, message) => {
         if (message.substr(constants.STATUS_BUTTON_START,constants.BUTTON_STRING.length) === constants.BUTTON_STRING){
           showHiddenField(message);

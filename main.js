@@ -47,73 +47,59 @@ app.on("ready", () => {
 ipcMain.on(constants.SET_PORT_EVENT, async (e, _) => {
   await setArduinoPort();
 });
-ipcMain.on(constants.L0_SWITCH_ID, async (e, item) =>{
-  await setArduinoPort();
-  if (portName !== constants.NOT_CONNECTED_ARDUINO){
-    if (item == true){port.write("W,L0,1\n");}
-    else{port.write("W,L0,0\n");}
-  }
-});
-ipcMain.on(constants.L1_SWITCH_ID, async (e, item) =>{
-  await setArduinoPort();
-  if (portName !== constants.NOT_CONNECTED_ARDUINO){
-    if (item == true){port.write("W,L1,1\n");}
-    else{port.write("W,L1,0\n");}
-  }
-});
-
-ipcMain.on(constants.S0_READ_EVENT, async e => {
-  await setArduinoPort();
-  if (portName !== constants.NOT_CONNECTED_ARDUINO)
-    port.write("R,S0\n");
-});
-
-ipcMain.on(constants.S1_READ_EVENT, async e => {
-  await setArduinoPort();
-  if (portName !== constants.NOT_CONNECTED_ARDUINO)
-    port.write("R,S1\n");
-});
 
 parser.on("data", line => {
   mainWindow.webContents.send(constants.SERIAL_MESSAGE_EVENT, line);
 });
 
-ipcMain.on(constants.L0_PWM_EVENT, async (e, value) => {
+ipcMain.on(constants.UP_EVENT, async (e, item) =>{
   await setArduinoPort();
-  if (portName !== constants.NOT_CONNECTED_ARDUINO)
-    port.write("A,L0," + value + "\n");
+  if (portName !== constants.NOT_CONNECTED_ARDUINO){
+   port.write("up\n");}
 });
 
-ipcMain.on(constants.L1_PWM_EVENT, async (e, value) => {
+ipcMain.on(constants.DOWN_EVENT, async (e, item) =>{
   await setArduinoPort();
-  if (portName !== constants.NOT_CONNECTED_ARDUINO)
-  port.write("A,L1," + value + "\n");
+  if (portName !== constants.NOT_CONNECTED_ARDUINO){
+  port.write("down\n");}
 });
 
-ipcMain.on(constants.L0_PULSE_EVENT, async (e, value) => {
+ipcMain.on(constants.LEFT_EVENT, async (e, item) =>{
   await setArduinoPort();
-  if (portName !== constants.NOT_CONNECTED_ARDUINO)
-    port.write("B,L0," + value + "\n");
+  if (portName !== constants.NOT_CONNECTED_ARDUINO){
+  port.write("left\n");}
 });
 
-ipcMain.on(constants.L1_PULSE_EVENT, async (e, value) => {
+ipcMain.on(constants.RIGTH_EVENT, async (e, item) =>{
   await setArduinoPort();
-  if (portName !== constants.NOT_CONNECTED_ARDUINO)
-  port.write("B,L1," + value + "\n");
+  if (portName !== constants.NOT_CONNECTED_ARDUINO){
+  port.write("right\n");}
 });
 
-ipcMain.on(constants.SAVE_EVENT, async e => {
+ipcMain.on(constants.FORWARD_EVENT, async (e, item) =>{
+  console.log("forward");
   await setArduinoPort();
-  if (portName !== constants.NOT_CONNECTED_ARDUINO)
-    port.write("E\n");
+  if (portName !== constants.NOT_CONNECTED_ARDUINO){
+  port.write("forward\n");}
 });
 
-ipcMain.on(constants.ALL_OFF_EVENT, async e => {
+ipcMain.on(constants.BACKWARD_EVENT, async (e, item) =>{
   await setArduinoPort();
-  if (portName !== constants.NOT_CONNECTED_ARDUINO)
-    port.write("O\n");
+  if (portName !== constants.NOT_CONNECTED_ARDUINO){
+  port.write("backward\n");}
 });
 
+ipcMain.on(constants.STOP_MOVEMENT_EVENT, async (e, item) =>{
+  await setArduinoPort();
+  if (portName !== constants.NOT_CONNECTED_ARDUINO){
+  port.write("stopMovement\n");}
+});
+
+ipcMain.on(constants.STOP_CRANE_EVENT, async (e, item) =>{
+  await setArduinoPort();
+  if (portName !== constants.NOT_CONNECTED_ARDUINO){
+  port.write("stopCrane\n");}
+});
 const mainMenuTemplate = [
   {
     label: "File",

@@ -1,0 +1,19 @@
+.grid {
+    display: inline-flex;           /* 1 */
+    flex-flow: row wrap;
+  }
+  
+  .up, .down {
+    flex: 0 0 100%;                 /* 2 */
+    text-align: center;             /* 2 */
+  }
+  
+  .left, .right {
+    flex: 1 0 1%;                   /* 3 */
+    display: flex;
+  }
+  
+  .left  { justify-content: flex-end; }
+  .right { justify-content: flex-start; }
+  
+  .ok {}
