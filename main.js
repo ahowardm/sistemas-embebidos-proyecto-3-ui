@@ -3,8 +3,8 @@ const url = require("url");
 const path = require("path");
 const SerialPort = require("serialport");
 const Readline = require("@serialport/parser-readline");
-const detectSerialPort = require('./serialPortArduino');
-const constants = require('./constants');
+const detectSerialPort = require("./serialPortArduino");
+const constants = require("./constants");
 
 const { app, BrowserWindow, Menu, ipcMain } = electron;
 const parser = new Readline();
@@ -30,7 +30,7 @@ app.on("ready", () => {
   );
 
   // Detect arduino port if finished to load
-  mainWindow.webContents.on('did-finish-load',setArduinoPort);
+  mainWindow.webContents.on("did-finish-load", setArduinoPort);
 
   //Quit from app if main window is close.
   //If there is other windows, must be a garbage collector
@@ -38,8 +38,8 @@ app.on("ready", () => {
     app.quit();
   });
 
-  const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
-  Menu.setApplicationMenu(mainMenu);
+  // const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
+  // Menu.setApplicationMenu(mainMenu);
 });
 
 //Get values from template
@@ -52,53 +52,62 @@ parser.on("data", line => {
   mainWindow.webContents.send(constants.SERIAL_MESSAGE_EVENT, line);
 });
 
-ipcMain.on(constants.UP_EVENT, async (e, item) =>{
+ipcMain.on(constants.UP_EVENT, async (e, item) => {
   await setArduinoPort();
-  if (portName !== constants.NOT_CONNECTED_ARDUINO){
-   port.write("up\n");}
+  if (portName !== constants.NOT_CONNECTED_ARDUINO) {
+    port.write("3");
+  }
 });
 
-ipcMain.on(constants.DOWN_EVENT, async (e, item) =>{
+ipcMain.on(constants.DOWN_EVENT, async (e, item) => {
   await setArduinoPort();
-  if (portName !== constants.NOT_CONNECTED_ARDUINO){
-  port.write("down\n");}
+  if (portName !== constants.NOT_CONNECTED_ARDUINO) {
+    port.write("4");
+  }
 });
 
-ipcMain.on(constants.LEFT_EVENT, async (e, item) =>{
+ipcMain.on(constants.LEFT_EVENT, async (e, item) => {
   await setArduinoPort();
-  if (portName !== constants.NOT_CONNECTED_ARDUINO){
-  port.write("left\n");}
+  if (portName !== constants.NOT_CONNECTED_ARDUINO) {
+    port.write("5");
+  }
 });
 
-ipcMain.on(constants.RIGTH_EVENT, async (e, item) =>{
+ipcMain.on(constants.RIGHT_EVENT, async (e, item) => {
+  console.log("right");
   await setArduinoPort();
-  if (portName !== constants.NOT_CONNECTED_ARDUINO){
-  port.write("right\n");}
+  if (portName !== constants.NOT_CONNECTED_ARDUINO) {
+    port.write("6");
+  }
 });
 
-ipcMain.on(constants.FORWARD_EVENT, async (e, item) =>{
+ipcMain.on(constants.FORWARD_EVENT, async (e, item) => {
   console.log("forward");
   await setArduinoPort();
-  if (portName !== constants.NOT_CONNECTED_ARDUINO){
-  port.write("forward\n");}
+  if (portName !== constants.NOT_CONNECTED_ARDUINO) {
+    port.write("7");
+  }
 });
 
-ipcMain.on(constants.BACKWARD_EVENT, async (e, item) =>{
+ipcMain.on(constants.BACKWARD_EVENT, async (e, item) => {
   await setArduinoPort();
-  if (portName !== constants.NOT_CONNECTED_ARDUINO){
-  port.write("backward\n");}
+  if (portName !== constants.NOT_CONNECTED_ARDUINO) {
+    port.write("8");
+  }
 });
 
-ipcMain.on(constants.STOP_MOVEMENT_EVENT, async (e, item) =>{
+ipcMain.on(constants.STOP_MOVEMENT_EVENT, async (e, item) => {
   await setArduinoPort();
-  if (portName !== constants.NOT_CONNECTED_ARDUINO){
-  port.write("stopMovement\n");}
+  if (portName !== constants.NOT_CONNECTED_ARDUINO) {
+    port.write("9");
+  }
 });
 
-ipcMain.on(constants.STOP_CRANE_EVENT, async (e, item) =>{
+ipcMain.on(constants.STOP_CRANE_EVENT, async (e, item) => {
   await setArduinoPort();
-  if (portName !== constants.NOT_CONNECTED_ARDUINO){
-  port.write("stopCrane\n");}
+  if (portName !== constants.NOT_CONNECTED_ARDUINO) {
+    port.write("stopCrane\n");
+  }
 });
 const mainMenuTemplate = [
   {
@@ -115,7 +124,7 @@ const mainMenuTemplate = [
   }
 ];
 
-if(process.platform == 'darwin'){
+if (process.platform == "darwin") {
   mainMenuTemplate.unshift({});
 }
 
@@ -126,7 +135,8 @@ if (process.env.NODE_ENV !== "production") {
     submenu: [
       {
         label: "Toggle DevTools",
-        accelerator: process.platform == constants.MAC_PLATFORM ? "Command+I" : "Ctrl+I",
+        accelerator:
+          process.platform == constants.MAC_PLATFORM ? "Command+I" : "Ctrl+I",
         click(item, focusedWindow) {
           focusedWindow.toggleDevTools();
         }
@@ -139,13 +149,17 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 //Detect arduino port
-async function setArduinoPort(){
+async function setArduinoPort() {
   let arduinoPort = await detectSerialPort.getArduinoPort();
-  if (arduinoPort !== constants.NOT_CONNECTED_ARDUINO && arduinoPort !== portName){
+  if (
+    arduinoPort !== constants.NOT_CONNECTED_ARDUINO &&
+    arduinoPort !== portName
+  ) {
     portName = arduinoPort;
     port = new SerialPort(arduinoPort, { baudRate: 9600 });
     port.pipe(parser);
   }
-  if (arduinoPort === constants.NOT_CONNECTED_ARDUINO) portName = constants.NOT_CONNECTED_ARDUINO;
+  if (arduinoPort === constants.NOT_CONNECTED_ARDUINO)
+    portName = constants.NOT_CONNECTED_ARDUINO;
   mainWindow.webContents.send(constants.PORT_ARDUINO_LABEL, arduinoPort);
 }

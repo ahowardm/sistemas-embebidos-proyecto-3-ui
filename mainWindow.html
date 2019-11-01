@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
   <head>
-    <link href="StyleSheet.css" rel="stylesheet" type="text/css"/>
+    <link href="StyleSheet.css" rel="stylesheet" type="text/css" />
 
     <link
       rel="stylesheet"
@@ -23,7 +23,7 @@
       <div class="row">
         <h5>Puerto</h5>
         <p>
-          Detección de puerto automática. 
+          Detección de puerto automática.
           <b>Actualizar si arduino no es detectado.</b>
         </p>
         <form>
@@ -50,54 +50,75 @@
 
       <h5>Crane</h5>
       <div class="grid">
-          <form action="/keyboard/" class="up">
-            <input type="hidden" name="q" value="126" />
-            <a style="width:100px" class="waves-effect waves-light btn" id="up">Up</a>
-          </form>
-          <form action="/keyboard/" class="left">
-            <input type="hidden" name="q" value="123" />
-            <a style="width:100px" class="waves-effect waves-light btn" id="left">Left</a>
-          </form>
-          <form action="/keyboard/" class="ok">
-            <input type="hidden" name="q" value="36" />
-            <a style="width:100px" class="waves-effect waves-light btn" id="stop1">Stop</a>
-          </form>
-          <form action="/keyboard/" class="right">
-            <input type="hidden" name="q" value="124" />
-            <a style="width:100px" class="waves-effect waves-light btn" id="right">Right</a>
-          </form>
-          <form action="/keyboard/" class="down">
-            <input type="hidden" name="q" value="125" />
-            <a style="width:100px" class="waves-effect waves-light btn" id="down">Down</a>
-          </form>
-        </div>
+        <form action="/keyboard/" class="up">
+          <input type="hidden" name="q" value="126" />
+          <a style="width:100px" class="waves-effect waves-light btn" id="up"
+            >Up</a
+          >
+        </form>
+        <form action="/keyboard/" class="left">
+          <input type="hidden" name="q" value="123" />
+          <a style="width:100px" class="waves-effect waves-light btn" id="left"
+            >Left</a
+          >
+        </form>
+        <form action="/keyboard/" class="ok">
+          <input type="hidden" name="q" value="36" />
+          <a style="width:100px" class="waves-effect waves-light btn" id="stop1"
+            >Stop</a
+          >
+        </form>
+        <form action="/keyboard/" class="right">
+          <input type="hidden" name="q" value="124" />
+          <a style="width:100px" class="waves-effect waves-light btn" id="right"
+            >Right</a
+          >
+        </form>
+        <form action="/keyboard/" class="down">
+          <input type="hidden" name="q" value="125" />
+          <a style="width:100px" class="waves-effect waves-light btn" id="down"
+            >Down</a
+          >
+        </form>
+      </div>
 
       <h5 style="margin-top: 50px">Movement</h5>
       <div style="margin-left: 100px" class="grid">
-          <form action="/keyboard/" class="up">
-            <input type="hidden" name="q" value="110" />
-            <a style="width:100px" class="waves-effect waves-light btn" id="forward">Forward</a>
-          </form>
-          <form action="/keyboard/" class="up">
-            <input type="hidden" name="q" value="30" />
-            <a style="width:100px" class="waves-effect waves-light btn" id="stop2">Stop</a>
-          </form>
-          <form action="/keyboard/" class="down">
-            <input type="hidden" name="q" value="111" />
-            <a style="width:100px" class="waves-effect waves-light btn" id="backward">Backward</a>
-          </form>
+        <form action="/keyboard/" class="up">
+          <input type="hidden" name="q" value="110" />
+          <a
+            style="width:100px"
+            class="waves-effect waves-light btn"
+            id="forward"
+            >Forward</a
+          >
+        </form>
+        <form action="/keyboard/" class="up">
+          <input type="hidden" name="q" value="30" />
+          <a style="width:100px" class="waves-effect waves-light btn" id="stop2"
+            >Stop</a
+          >
+        </form>
+        <form action="/keyboard/" class="down">
+          <input type="hidden" name="q" value="111" />
+          <a
+            style="width:100px"
+            class="waves-effect waves-light btn"
+            id="backward"
+            >Backward</a
+          >
+        </form>
       </div>
     </div>
 
-
     <script>
       const electron = require("electron");
-      const constants = require('./constants');
-      const { ipcRenderer} = electron;
+      const constants = require("./constants");
+      const { ipcRenderer } = electron;
       const port = document.querySelector("#port");
 
-      const {dialog} = require('electron').remote;
-      
+      const { dialog } = require("electron").remote;
+
       const form = document.querySelector("form");
       form.addEventListener("submit", e => {
         e.preventDefault();
@@ -106,13 +127,15 @@
 
       const up = document.getElementById(constants.UP_EVENT);
       const down = document.getElementById(constants.DOWN_EVENT);
-      const left = document.getElementById(constants.UP_EVENT);
-      const right = document.getElementById(constants.DOWN_EVENT);
+      const left = document.getElementById(constants.LEFT_EVENT);
+      const right = document.getElementById(constants.RIGHT_EVENT);
       const stopCrane = document.getElementById(constants.STOP_CRANE_EVENT);
       const forward = document.getElementById(constants.FORWARD_EVENT);
       const backward = document.getElementById(constants.BACKWARD_EVENT);
-      const stopMovement = document.getElementById(constants.STOP_MOVEMENT_EVENT);
-     
+      const stopMovement = document.getElementById(
+        constants.STOP_MOVEMENT_EVENT
+      );
+
       up.addEventListener("click", () => {
         ipcRenderer.send(constants.UP_EVENT);
       });
@@ -137,19 +160,24 @@
       stopMovement.addEventListener("click", () => {
         ipcRenderer.send(constants.STOP_MOVEMENT_EVENT);
       });
-      
+
       ipcRenderer.on(constants.SERIAL_MESSAGE_EVENT, (event, message) => {
-        if (message.substr(constants.STATUS_BUTTON_START,constants.BUTTON_STRING.length) === constants.BUTTON_STRING){
+        if (
+          message.substr(
+            constants.STATUS_BUTTON_START,
+            constants.BUTTON_STRING.length
+          ) === constants.BUTTON_STRING
+        ) {
           showHiddenField(message);
         }
-        if (message.substr(0,5) === 'Error'){
+        if (message.substr(0, 5) === "Error") {
           console.log(message);
           const options = {
-            type: 'error',
-            buttons: ['Ok'],
+            type: "error",
+            buttons: ["Ok"],
             defaultId: 2,
-            title: 'Error',
-            message: message,
+            title: "Error",
+            message: message
           };
           response = dialog.showMessageBox(null, options);
           ipcRenderer.send(constants.ALL_OFF_EVENT);
